@@ -8,7 +8,7 @@ import {
   ImageStyle,
 } from 'react-native'
 import { CountryModal } from './CountryModal'
-import { HeaderModal } from './HeaderModal'
+import { CloseButtonProps, HeaderModal } from './HeaderModal'
 import { Country, CountryCode, FlagType, Region, Subregion } from './types'
 import { CountryFilter, CountryFilterProps } from './CountryFilter'
 import { FlagButton } from './FlagButton'
@@ -72,6 +72,7 @@ interface CountryPickerProps {
   closeButtonImageStyle?: StyleProp<ImageStyle>
   renderFlagButton?(props: FlagButton['props']): ReactNode
   renderCountryFilter?(props: CountryFilter['props']): ReactNode
+  renderCountryCloseButton?(props: CloseButtonProps): ReactNode
   onSelect(country: Country): void
   onOpen?(): void
   onClose?(): void
@@ -86,6 +87,7 @@ export const CountryPicker = (props: CountryPickerProps) => {
     countryCodes,
     renderFlagButton: renderButton,
     renderCountryFilter,
+    renderCountryCloseButton,
     filterProps,
     modalProps,
     flatListProps,
@@ -176,10 +178,10 @@ export const CountryPicker = (props: CountryPickerProps) => {
       preferredCountries,
       withAlphaFilter,
     )
-      .then(countries => cancel ? null : setCountries(countries))
+      .then(countries => (cancel ? null : setCountries(countries)))
       .catch(console.warn)
-    
-    return () => cancel = true
+
+    return () => (cancel = true)
   }, [translation, withEmoji])
 
   return (
@@ -198,6 +200,7 @@ export const CountryPicker = (props: CountryPickerProps) => {
             closeButtonImageStyle,
             closeButtonStyle,
             withCloseButton,
+            renderCloseButton: renderCountryCloseButton,
           }}
           renderFilter={(props: CountryFilter['props']) =>
             renderFilter({
